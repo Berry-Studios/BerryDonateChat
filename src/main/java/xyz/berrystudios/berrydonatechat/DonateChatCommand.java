@@ -7,10 +7,11 @@ import net.md_5.bungee.api.plugin.Command;
 
 public class DonateChatCommand extends Command {
 
-    private final String prefix = ChatColor.DARK_PURPLE + "Donate-Chat " + ChatColor.DARK_GRAY + "» ";
+    private final String prefix;
 
     public DonateChatCommand() {
         super("donatechat", BerryDonateChat.COMMAND_PERMISSION, "dchat", "dc");
+        this.prefix = BerryDonateChat.getPlugin().getConfig().getOrSet("prefix", ChatColor.DARK_PURPLE + "Donate-Chat " + ChatColor.DARK_GRAY + "» ");
     }
 
     @SuppressWarnings("deprecation")
@@ -20,10 +21,10 @@ public class DonateChatCommand extends Command {
 
             if (args.length == 1 && args[0].equalsIgnoreCase("toggle")) {
                 if (BerryDonateChat.getPlugin().getToggled().contains(player.getName())) {
-                    BerryDonateChat.getPlugin().getToggled().remove(player.getName());
+                    BerryDonateChat.getPlugin().toggle(player.getName(), true);
                     player.sendMessage(prefix + ChatColor.GREEN + "Enabled donate chat!");
                 } else {
-                    BerryDonateChat.getPlugin().getToggled().add(player.getName());
+                    BerryDonateChat.getPlugin().toggle(player.getName(), false);
                     player.sendMessage(prefix + ChatColor.GREEN + "Disabled donate chat!");
                 }
                 return;
