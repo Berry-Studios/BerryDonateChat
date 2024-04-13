@@ -1,11 +1,11 @@
 # BerryDonateChat
 
 This plugin allows you to have a custom chat exclusive only to donators or to players with a specific permission. To add/remove/modify permissions of a player or to create ranks, use [LuckPerms](https://www.spigotmc.org/resources/luckperms.28140/). \
-![nB68TuN9](https://user-images.githubusercontent.com/78689730/221161414-5c787294-96e1-46db-a3f0-527ea2ab1e6d.png)
+![nB68TuN9](https://raw.githubusercontent.com/Berry-Studios/BerryDonateChat/master/images/donate-chat_colorless.png)
 
 ### The features we provide:
 - You can also use color codes in your message if you have the appropriate permission. \
-![cNIiTt7R](https://user-images.githubusercontent.com/78689730/221161623-363fe519-a870-4cb6-abc9-f73e562fcb85.png)
+![cNIiTt7R](https://raw.githubusercontent.com/Berry-Studios/BerryDonateChat/master/images/donate-chat_colorful.png)
 
 - You can toggle enable/disable the donate chat. Toggled users can be saved in 2 modes:
   - `mysql` mode \
