@@ -1,0 +1,8 @@
+name: BerryDonateChat
+version: '${project.version}'
+author: Berry Studios
+main: xyz.berrystudios.berrydonatechat.BerryDonateChat
+commands:
+   donatechat:
+      aliases: [dchat, dc]
+      permission: berrydonatechat.command

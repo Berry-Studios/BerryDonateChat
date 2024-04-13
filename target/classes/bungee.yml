@@ -1,0 +1,8 @@
+name: BerryDonateChat
+version: '1.1'
+author: Berry Studios
+main: xyz.berrystudios.berrydonatechat.BerryDonateChat
+commands:
+   donatechat:
+      aliases: [dchat, dc]
+      permission: berrydonatechat.command
