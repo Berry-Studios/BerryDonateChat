@@ -30,7 +30,24 @@ This plugin allows you to have a custom chat exclusive only to donators or to pl
     
 - You can personalize the donate chat message format in `config.yml`! An example config:
     ```
-    prefix: '§5Donate-Chat §8» '
+    prefix: '&2Donate-Chat'
+    chat: '{prefix} &f{player_name} &7» &f{message}'
+    ```
+
+- You can personalize toggle messages in `config.yml`! An example config:
+    ```
+    user-toggle-message:
+      enabled: '{prefix} &aEnabled donate chat!'
+      disabled: '{prefix} &aDisabled donate chat!'
+      not-enabled: '{prefix} &cYou have disabled donate chat. Toggle it again to send messages!'
+    ```
+
+- Change the command and aliases as you like in `config.yml`! An example config:
+    ```
+    command: 'donatechat'
+    aliases:
+      - 'dc'
+      - 'dchat'
     ```
 
 List of permissions:
