@@ -2,6 +2,7 @@ name: BerryDonateChat
 version: '${project.version}'
 author: Berry Studios
 main: xyz.berrystudios.berrydonatechat.BerryDonateChat
+description: 'Enables communication among donators in a separate chat across servers.'
 commands:
    donatechat:
       aliases: [dchat, dc]

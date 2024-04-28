@@ -5,26 +5,20 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class DonateChatCommand extends Command {
 
-    private final String prefix;
-    private final String chat;
-    private final String toggleEnable;
-    private final String toggleDisable;
-    private final String toggleNotEnabled;
-    private final String commandUsage;
 
-    public DonateChatCommand() {
+    private final String prefix, chat, cooldownMessage, toggleEnable, toggleNotEnabled, toggleDisable, commandUsage;
+
+    public DonateChatCommand(String command, String... aliases) {
         super(
-                BerryDonateChat.getPlugin().getConfig().getOrSet("command.command", "donatechat"),
+                command,
                 BerryDonateChat.COMMAND_PERMISSION,
-                BerryDonateChat.getPlugin().getConfig().getOrSet("command.aliases", new ArrayList<>(Arrays.asList("dc", "dchat")))
-                        .toArray(new String[0])
+                aliases
         );
 
+        // This won't look good in config, but what can I do; the current system doesn't allow me to make the config beautiful.
+        this.cooldownMessage = BerryDonateChat.getPlugin().getConfig().getOrSet("cooldown.message", "{prefix} &7» &cYou are on cooldown! Please wait {cooldown} seconds before sending another message.");
         this.prefix = BerryDonateChat.getPlugin().getConfig().getOrSet("prefix", "&2&lDonate-Chat");
         this.chat = BerryDonateChat.getPlugin().getConfig().getOrSet("chat", "{prefix} &f{player_name} &7» &f{message}");
         this.toggleEnable = BerryDonateChat.getPlugin().getConfig().getOrSet("user-toggle-message.enabled", "{prefix} &7» &aEnabled donate chat!");
@@ -42,7 +36,6 @@ public class DonateChatCommand extends Command {
             sender.sendMessage("This command can only be executed by players!");
             return;
         }
-
         if (args.length == 1 && args[0].equalsIgnoreCase("toggle")) {
             if (BerryDonateChat.getPlugin().getToggled().contains(player.getName())) {
                 BerryDonateChat.getPlugin().toggle(player.getName(), true);
@@ -53,18 +46,30 @@ public class DonateChatCommand extends Command {
             }
             return;
         }
-
         if (BerryDonateChat.getPlugin().getToggled().contains(player.getName())) {
             player.sendMessage(this.format(toggleNotEnabled));
             return;
         }
-
         if (args.length >= 1) {
+            if (!player.hasPermission(BerryDonateChat.COOLDOWNBYPASS_PERMISSION)) {
+                long currentTime = System.currentTimeMillis();
+                long remainingCooldown = BerryDonateChat.getPlugin().getCooldowns().stream()
+                        .filter(cooldown -> cooldown.getPlayer().equals(player.getName()))
+                        .mapToLong(Cooldown::getAddedAt)
+                        .map(addedAt -> addedAt + BerryDonateChat.getPlugin().getCooldownDuration() - currentTime)
+                        .findFirst()
+                        .orElse(0);
+
+                if (remainingCooldown > 0) {
+                   player.sendMessage(this.format(cooldownMessage.replace("{cooldown}", String.valueOf(remainingCooldown / 1000))));
+                    return;
+                }
+                BerryDonateChat.getPlugin().addCooldown(player);
+            }
             String message = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
             if (!player.hasPermission(BerryDonateChat.COLOR_PERMISSION)) {
-                message = message.replaceAll(String.valueOf(ChatColor.COLOR_CHAR), "");
+                message = ChatColor.stripColor(message);
             }
-
             String finalMessage = message;
             BerryDonateChat.getPlugin().getProxy().getPlayers().forEach(proxiedPlayer -> {
                 if (proxiedPlayer.hasPermission(BerryDonateChat.COMMAND_PERMISSION) && !BerryDonateChat.getPlugin().getToggled().contains(proxiedPlayer.getName())) {
@@ -86,7 +91,6 @@ public class DonateChatCommand extends Command {
     private String formatChat(String chat, String message, ProxiedPlayer player) {
         String formattedChat = ChatColor.translateAlternateColorCodes('&', chat);
         String formattedPrefix = ChatColor.translateAlternateColorCodes('&', prefix);
-
         return formattedChat
                 .replace("{prefix}", formattedPrefix)
                 .replace("{player_name}", player.getDisplayName())
